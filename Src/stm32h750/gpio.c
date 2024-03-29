@@ -17,7 +17,7 @@ void setAsOutput(uint32_t pinNr)
     gpio=(GPIO_TypeDef*)(GPIOA_BASE + port*0x400);
     reg = gpio->MODER;
     reg &= ~(3 << ((pinNr & 0xF)<<1));
-    reg &= (1 << ((pinNr & 0xF)<<1));
+    reg |= (1 << ((pinNr & 0xF)<<1));
     gpio->MODER = reg;
     gpio->PUPDR &= ~(3 << ((pinNr & 0xF)<< 1));
 }
