@@ -37,6 +37,7 @@
 #include "sai.h"
 #include "i2c.h"
 #include "wm8731.h"
+#include "pcm3060.h"
 #include "audio/sineplayer.h"
 #include "audio/simpleChorus.h"
 #include "audio/secondOrderIirFilter.h"
@@ -120,23 +121,24 @@ int main(void)
 	initSystickTimer();
 	initDatetimeClock();
 	initUart(57600);
-    
 	initDMA();
     initFmcSdram();
     initQspi();
+
+
+
 	initTimer();
 	initAdc();
-	initI2c(26); // 26 for wm8731, 72 for cs4270
-	
+	#ifndef PCM3060_CODEC
+    initI2c(26); // 26 for wm8731, 72 for cs4270, none for pcm3060
+    #endif
 
 	//Initialise Component-specific drivers
 	initOledDisplay();
-	setupWm8731(SAMPLEDEPTH_24BIT,SAMPLERATE_48KHZ);
-	initRotaryEncoder(switchesPins,2);
-	encoderVal=getEncoderValue();
-    initDebugLed();
 
-    // wait for flashing when button 0 (Enter switch) is pressed during startup 
+    initRotaryEncoder(switchesPins,2);
+
+        // wait for flashing when button 0 (Enter switch) is pressed during startup 
     // allows flashing the QSPI from a corrupted state
     volatile uint8_t currentSwitchVal = getMomentarySwitchValue(0);
     if ((currentSwitchVal & 0x01)==1)
@@ -145,6 +147,16 @@ int main(void)
         flashingTask();
         task &= ~(1 << TASK_FLASH_QSPI);
     }
+	#ifdef PCM3060_CODEC
+    setupPCM3060();
+    #else
+    setupWm8731(SAMPLEDEPTH_24BIT,SAMPLERATE_48KHZ);
+    #endif
+
+	encoderVal=getEncoderValue();
+    initDebugLed();
+
+
 
     //Initialize Background Services
 	//initCliApi();
