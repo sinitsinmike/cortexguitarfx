@@ -27,7 +27,7 @@
             "executable": "./out/microsys_audio.elf",
             "name": "Debug with ST-Link",
             "request": "attach",
-            "interface": "jtag",
+            "interface": "swd",
             "type": "cortex-debug",
             "showDevDebugOutput": "parsed",
             "servertype": "stlink",
