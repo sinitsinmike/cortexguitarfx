@@ -135,14 +135,15 @@ int main(int argc,char ** argv)
         fclose(binfile);
         return 1;
     }
-    printf("waiting for identifier ACK\r\n");
+    printf("waiting for identifier\r\n");
     if (waitForAck(uploader)!=0)
     {
-        printf("identifier not acknowledged\r\n");
+     printf(".... NOK identifier not acknowledged\r\n");
         close(uploader);
         fclose(binfile);
         return 1;
     }
+    printf(".... ACK identifier acknowledged\r\n");
 
     // send file length
     fseek(binfile,0L,SEEK_END);

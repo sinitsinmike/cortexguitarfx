@@ -4,6 +4,7 @@
 #include "stm32h750/stm32h7xx.h"
 #include "system.h"
 #include "qspi.h"
+#include "systick.h"
 
 #define QSPI_PROGRAMMER_IDLE 0
 #define QSPI_PROGRAMMER_IDENTIFIER_RECEIVED 1
@@ -66,6 +67,8 @@ void processUartReception(uint8_t receivedByte)
 void flashingTask()
 {
     uint32_t bytesReceived=0;
+    disableAudioEngine();
+    waitSysticks(1);
     // call chip erase
     setQspiStatus(2);
     endMemoryMappedMode();
@@ -104,6 +107,7 @@ void flashingTask()
         bytesReceived++;
     }
     __NVIC_EnableIRQ(USART1_IRQn);
+    enableAudioEngine();
 }
 
 
