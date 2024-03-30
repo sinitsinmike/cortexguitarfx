@@ -83,7 +83,7 @@ def generate_matrix_transfer_function(xa,xb,ya,yb,successions,do_plot=True,outpu
                 yvals[idx]=xvals[idx]
             else:
                 yvals[idx] = tf.compute(yvals[idx])
-            bytearray += "0x{:x}, ".format(ushort(yvals[idx]*32767))
+            bytearray += "0x{:x}, ".format(ushort(yvals[idx]*32768))
             floatarray += "{:f}f, ".format(yvals[idx])
         bytearray += "\r\n},"
         floatarray += "\r\n},"

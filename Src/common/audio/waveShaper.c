@@ -198,7 +198,7 @@ float multiWaveShaperProcessSample(float sampleIn,MultiWaveShaperDataType*data)
 {
     int32_t indx;
     float v1,v2,rem,factor,indexfloat;
-    indexfloat = ((sampleIn+1.0f)*((float)((WAVESHAPER_CURVE_LENGTH-1)/2)) + 0.5f);
+    indexfloat = ((sampleIn+1.0f)*(((float)((WAVESHAPER_CURVE_LENGTH-1)/2)) + 0.5f));
     indx = (int32_t)indexfloat; 
     if (indx > (WAVESHAPER_CURVE_LENGTH-1))
     {
