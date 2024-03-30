@@ -98,12 +98,6 @@ static void create(PiPicoFxUiType*data)
 
 }
 
-static void update(int16_t avgInput,int16_t avgOutput,uint8_t cpuLoad,PiPicoFxUiType*data)
-{
-    BwImageType* imgBuffer = getImageBuffer();
-    OledwriteFramebufferAsync(imgBuffer->data);
-}
-
 
 static void enterCallback(PiPicoFxUiType*data) 
 {
@@ -313,7 +307,6 @@ void enterLevel5(PiPicoFxUiType*data)
     registerEnterButtonPressedCallback(&enterCallback);
     registerExitButtonPressedCallback(&exitCallback);
     registerRotaryCallback(&rotaryCallback);
-    registerOnUpdateCallback(&update);
     registerOnCreateCallback(&create);
     create(data);
 }

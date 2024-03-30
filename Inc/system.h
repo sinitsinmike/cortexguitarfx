@@ -76,8 +76,11 @@
 #define TASK_PROCESS_AUDIO 4 //<! bit position of the task bit array, set: one half of the audio double buffer has been written completely and is available for processing
 #define TASK_PROCESS_AUDIO_INPUT 5 //<! audio input buffer has been filled, process it
 #define TASK_UPDATE_POTENTIOMETER_VALUES 6  //<! potentiometer values have been read --> update
-#define TASK_UPDATE_AUDIO_UI 7
-#define TASK_FLASH_QSPI 8
+#define TASK_UPDATE_AUDIO_UI 7 // update the screen content: rewrite framebuffer and issue a display driver update
+#define TASK_FLASH_QSPI 8 // flash the qspi content
+#define TASK_DISPLAY_NEXT_LINE 9 //issued by the display driver: next line content should be transferred from dma
+
+
 #define CONTEXT_USB 0 //!<bit position: if set output of prints is routed to the USB console
 #define CONTEXT_BT 1 //!<bit position: if set output of prints is routed to the bluetooth console
 

@@ -68,11 +68,6 @@ static void create(PiPicoFxUiType*data)
     drawText(40,53,"Cancel",imgBuffer,font);
 }
 
-static void update(int16_t avgInput,int16_t avgOutput,uint8_t cpuLoad,PiPicoFxUiType*data)
-{
-    BwImageType* imgBuffer = getImageBuffer();
-    OledwriteFramebufferAsync(imgBuffer->data);
-}
 
 
 static void enterCallback(PiPicoFxUiType*data) 
@@ -224,13 +219,6 @@ void enterLevel6(PiPicoFxUiType*data)
     registerEnterButtonPressedCallback(&enterCallback);
     registerExitButtonPressedCallback(&exitCallback);
     registerRotaryCallback(&rotaryCallback);
-    //registerKnob0Callback(&knob0Callback);
-    //registerKnob1Callback(&knob1Callback);
-    //registerKnob2Callback(&knob2Callback);
-    //registerStompswitch1PressedCallback(&stompswitch1Callback);
-    //registerStompswitch2PressedCallback(&stompswitch2Callback);
-    //registerStompswitch3PressedCallback(&stompswitch3Callback);
-    registerOnUpdateCallback(&update);
     registerOnCreateCallback(&create);
     create(data);
 }

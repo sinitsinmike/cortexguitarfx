@@ -96,6 +96,7 @@ uint16_t adcChannelOld0=0,adcChannel0=0;
 uint16_t adcChannelOld1=0,adcChannel1=0;
 uint16_t adcChannelOld2=0,adcChannel2=0;
 uint16_t adcChannel=0;
+uint8_t * fb;
 
 uint32_t tickStart, tickEnd;
 char chrbfr[16];
@@ -192,6 +193,8 @@ int main(void)
     
     
     audioStatePtr = getAudioStatePtr();
+    BwImageType * imgBfr = getImageBuffer();
+    fb = imgBfr->data;
 
     /* Loop forever */
 	for(;;)
@@ -213,6 +216,7 @@ int main(void)
             avgOldOutBfr = (int32_t)(avgOutOld*128.0f);
             cpuLoadBfr = cpuLoad >> 1;
             onUpdate(avgOldInBfr,avgOldOutBfr,cpuLoadBfr,&piPicoUiController);
+            OledwriteFramebufferAsync(fb);
             if ((*audioStatePtr & (1 << AUDIO_STATE_INPUT_CLIPPED)) == (1 << AUDIO_STATE_INPUT_CLIPPED))
             {
                 setPin(CLIPPING_LED_INPUT,1);
@@ -279,6 +283,14 @@ int main(void)
                 task &= ~(1 << TASK_UPDATE_POTENTIOMETER_VALUES);
                 restartAdc();
             }
+        }
+
+        if ((task & (1 << TASK_DISPLAY_NEXT_LINE)) != 0)
+        {
+            // wait until transmission through spi is done 
+            while ((SPI1->SR & (1 << SPI_SR_TXC_Pos))==0); 
+            OledWriteNextLine();
+            task &= ~(2 << TASK_DISPLAY_NEXT_LINE);
         }
 		
         switchVals[0] = getSwitchValue(0);

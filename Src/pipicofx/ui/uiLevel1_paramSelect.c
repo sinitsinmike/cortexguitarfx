@@ -47,7 +47,6 @@ static void update(int16_t avgInput,int16_t avgOutput,uint8_t cpuLoad,PiPicoFxUi
     drawLine(cx,cy,px,py,img);
     data->currentParameter->getParameterDisplay(data->currentProgram->data,paramValueBfr);
     drawText(0,64,paramValueBfr,img,0);
-    OledwriteFramebufferAsync(img->data);
 }
 
 static void enterCallback(PiPicoFxUiType*data) 

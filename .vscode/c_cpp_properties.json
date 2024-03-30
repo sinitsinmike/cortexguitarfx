@@ -14,7 +14,8 @@
                 "STM32H750xx",
                 "I2S_INPUT", 
                 "FLOAT_AUDIO", 
-                "INTERNAL_CODEC"
+                "INTERNAL_CODEC",
+                "JOYIT_128X64_DISPLAY"
             ],
             "compilerPath": "/usr/bin/arm-none-eabi-gcc",
             "cStandard": "c11",

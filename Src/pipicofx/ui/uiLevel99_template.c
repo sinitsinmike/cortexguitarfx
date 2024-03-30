@@ -15,8 +15,6 @@ static void create(PiPicoFxUiType*data)
 
 static void update(int16_t avgInput,int16_t avgOutput,uint8_t cpuLoad,PiPicoFxUiType*data)
 {
-    BwImageType* imgBuffer = getImageBuffer();
-    OledwriteFramebufferAsync(imgBuffer->data);
 }
 
 

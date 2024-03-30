@@ -14,12 +14,14 @@
 #include "stm32h750/stm32h750xx.h"
 #include "stm32h750/stm32h750_cfg_pins.h"
 #include "stm32h750/helpers.h"
+#include "system.h"
 
 static volatile uint8_t currentDmaRow=SSD1306_DISPLAY_N_PAGES;
 static volatile uint8_t * currentFrameBuffer=0;
 static GPIO_TypeDef *gpio_cd;
 static GPIO_TypeDef *gpio_reset;
 static GPIO_TypeDef *gpio_cs;
+extern uint32_t task;
 #define SPI1_TXDR_BYTE  *((uint8_t*)&SPI1->TXDR) 
 
 
@@ -27,10 +29,7 @@ void DMA1_Stream3_IRQHandler(void)
 {
     // clear dma transfer complete flag
     DMA1->LIFCR = (1 << DMA_LIFCR_CTCIF3_Pos);
-
-    // wait until transmission through spi is done 
-    while ((SPI1->SR & (1 << SPI_SR_TXC_Pos))==0); 
-    OledWriteNextLine();
+    task |= (1 << TASK_DISPLAY_NEXT_LINE);
 }
 
 static void config_spi_pin(uint8_t pinnr,uint8_t alternateFunction)
@@ -399,8 +398,10 @@ void OledWriteNextLine(void)
 
 void OledwriteFramebufferAsync(uint8_t * fb)
 {
-    while(currentDmaRow<SSD1306_DISPLAY_N_PAGES); // block until previous transfer is done
-    currentDmaRow=0;
-    currentFrameBuffer=fb;
-    OledWriteNextLine();
+    if(currentDmaRow==SSD1306_DISPLAY_N_PAGES) // only write when previous transfer ended
+    {
+        currentDmaRow=0;
+        currentFrameBuffer=fb;
+        OledWriteNextLine();
+    }
 }

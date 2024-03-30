@@ -108,8 +108,6 @@ static void update(int16_t avgInput,int16_t avgOutput,uint8_t cpuLoad,PiPicoFxUi
         }
     }
     drawImage(0,3*8,&bargraph,imgBuffer);
-
-    OledwriteFramebufferAsync(imgBuffer->data);
 }
 
 static inline void knobCallback(uint16_t val,PiPicoFxUiType*data,uint8_t control)
