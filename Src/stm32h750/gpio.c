@@ -45,7 +45,7 @@ void setHigh(uint32_t pinNr)
     uint32_t port;
     port = pinNr >> 4;
     gpio=(GPIO_TypeDef*)(GPIOA_BASE + port*0x400);
-    gpio->BSRR = (1 << ((pinNr & 0xF)+15));
+    gpio->BSRR = (1 << ((pinNr & 0xF)));
 }
 
 void setLow(uint32_t pinNr)
@@ -54,7 +54,7 @@ void setLow(uint32_t pinNr)
     uint32_t port;
     port = pinNr >> 4;
     gpio=(GPIO_TypeDef*)(GPIOA_BASE + port*0x400);
-    gpio->BSRR = (1 << (pinNr & 0xF));
+    gpio->BSRR = (1 << ((pinNr & 0xF)+16));
 }
 
 uint8_t readPin(uint32_t pinNr)
