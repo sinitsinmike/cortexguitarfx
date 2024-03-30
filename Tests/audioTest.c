@@ -16,15 +16,29 @@ int32_t float2int(float a)
     return (int32_t)a;
 }
 
+float convolve(const float*coeffs,float*data,uint32_t offset)
+{
+    float res=0.0f;
+    for(uint32_t c=0;c<64;c++)
+    {
+        res += *(coeffs + c) * *(data + ((offset + c)&0x3F));
+    }
+    return res;
+}
+
 void impulseTest()
 {
     FILE * fid;
     int16_t cval;
     int16_t val_out;
     SecondOrderIirFilterType testFilter = {
-        .coeffB = {1007, -2014, 1007},
-        .coeffA = {-2013,991},
-        .w= {0,0,0}
+        .coeffB = {1007.f/32768.f, -2014.f/32768.f, 1007.f/32768.f},
+        .coeffA = {-2013.f/32768.f,991.f/32768.f},
+        .x1=0.f,
+        .x2=0.f,
+        .y1=0.f,
+        .y2=0.f,
+        .acc=0.f
     };
 
     fid = fopen("audioout.txt","wt");
@@ -32,11 +46,11 @@ void impulseTest()
     {
         if (c==0)
         {
-            cval = 32767;
+            cval = 1.0f;
         }
         else
         {
-            cval = 0;
+            cval = 0.f;
         }
         val_out = secondOrderIirFilterProcessSample(cval,&testFilter);
         fprintf(fid,"%d\r\n",val_out);
@@ -64,9 +78,20 @@ void waveshaperTest()
     waveShaperProcessSample(-100,&wsData);   
 }
 
+void multiWaveShaperTest()
+{
+    MultiWaveShaperDataType wsData;
+    initMultiWaveShaper(&wsData,&multiWaveshaper1);
+    wsData.functionIndex = 45;
+    multiWaveShaperProcessSample(0.0f,&wsData);
+    multiWaveShaperProcessSample(0.01f,&wsData);
+    multiWaveShaperProcessSample(-0.01f,&wsData);
+}
+
 int main()
 {
     //impulseTest();
     //waveshaperTest();
-    sineFunctionTest();
+    //sineFunctionTest();
+    multiWaveShaperTest();
 }

@@ -198,15 +198,17 @@ float multiWaveShaperProcessSample(float sampleIn,MultiWaveShaperDataType*data)
 {
     int32_t indx;
     float v1,v2,rem,factor,indexfloat;
-    indexfloat = ((sampleIn+1.0f)*(((float)((WAVESHAPER_CURVE_LENGTH-1)/2)) + 0.5f));
+    indexfloat = (sampleIn+1.0f)*((float)WAVESHAPER_CURVE_LENGTH)*0.5f; //*(((float)((WAVESHAPER_CURVE_LENGTH-1)/2)) + 0.5f));
     indx = (int32_t)indexfloat; 
-    if (indx > (WAVESHAPER_CURVE_LENGTH-1))
+    if (indx > (WAVESHAPER_CURVE_LENGTH-2))
     {
         indx=(WAVESHAPER_CURVE_LENGTH-1);
+        return data->transferFunctions[data->functionIndex][(WAVESHAPER_CURVE_LENGTH-1)];
     }
     else if (indx < 0)
     {
         indx=0;
+        return data->transferFunctions[data->functionIndex][0];
     }
     v1 = data->transferFunctions[data->functionIndex][indx];
     v2 = data->transferFunctions[data->functionIndex][indx+1];
@@ -222,13 +224,15 @@ float waveShaperProcessSample(float sampleIn,WaveShaperDataType*data)
     float v1,v2,rem,factor,indexfloat;
     indexfloat = ((sampleIn+1.0f)*63.5f) + 0.5f;
     indx = (int32_t)indexfloat; // rescale to 0-127
-    if (indx > 127)
+    if (indx > 126)
     {
         indx=127;
+        return data->transferFunctionPoints[127];
     }
     else if (indx < 0)
     {
         indx=0;
+        return data->transferFunctionPoints[0];
     }
     v1 = data->transferFunctionPoints[indx];
     v2 = data->transferFunctionPoints[indx+1];
