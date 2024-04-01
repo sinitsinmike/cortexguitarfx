@@ -121,7 +121,7 @@ int main(void)
     setupClock();
 	initSystickTimer();
 	initDatetimeClock();
-	initUart(57600);
+	initUart(2000000);
 	initDMA();
     initFmcSdram();
     initQspi();

@@ -48,7 +48,7 @@ typedef struct
  * 
  * @param baudrate allowed values: 2400, 4800, 9600 19200,28800,57600, 115200
  */
-void initUart(uint16_t baudrate);
+void initUart(uint32_t baudrate);
 
 /**
  * @brief initialize the uart meanth to have a bluetooth interface attached

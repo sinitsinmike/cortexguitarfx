@@ -51,17 +51,16 @@ void USART1_IRQHandler()
 // irq for uart reception, optional Bluetooth port
 
 //setup
-void initUart(uint16_t baudrate)
+void initUart(uint32_t baudrate)
 {
     uint32_t divider;
     uint32_t regbfr;
-    uint32_t baudrateWord;
-    baudrateWord=baudrate;
+
     // enable clock
     RCC->APB2ENR |= (1 << RCC_APB2ENR_USART1EN_Pos);
 
     // define baudrate
-    divider = APB2_SPEED/baudrateWord; 
+    divider = APB2_SPEED/baudrate; 
     USART1->BRR = divider & 0xFFFF;
 
     // enable usart, receiver and transmitter and receiver not empty interrupt

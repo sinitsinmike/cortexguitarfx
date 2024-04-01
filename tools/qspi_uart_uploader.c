@@ -5,6 +5,8 @@
 #include <termios.h>
 #include "time.h"
 
+
+#define FLASHER_BAUD_RATE B2000000
 union datalength
 {
     __uint32_t binFileLength;
@@ -117,8 +119,8 @@ int main(int argc,char ** argv)
     uartconfig.c_cc[VMIN]  = 1;
     uartconfig.c_cc[VTIME] = 0;
 
-    if(cfsetispeed(&uartconfig, B57600) < 0 || cfsetospeed(&uartconfig, B57600) < 0) {
-        printf("could not set baud rate of 57600baud \r\n");
+    if(cfsetispeed(&uartconfig, FLASHER_BAUD_RATE) < 0 || cfsetospeed(&uartconfig, FLASHER_BAUD_RATE) < 0) {
+        printf("could not set baud rate of 2000000 baud \r\n");
         close(uploader);
         fclose(binfile);
         return 1;

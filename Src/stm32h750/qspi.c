@@ -367,6 +367,76 @@ void QspiEraseSectorQpi(uint32_t address)
     waitForStatusQpi(IS25LP064A_SR_WIP,0);
 }
 
+// erases a sector of 4 kbytes
+void QspiEraseSector(uint32_t address)
+{
+    writeEnable();
+    while((QUADSPI->SR & (1 << QUADSPI_SR_BUSY_Pos))!=0);
+    QUADSPI->DLR = 0;
+    QUADSPI->CCR = (1 << QUADSPI_CCR_IMODE_Pos) // instruction on one line
+            | (SECTOR_ERASE_SPI_CMD << QUADSPI_CCR_INSTRUCTION_Pos)
+            | (2 << QUADSPI_CCR_ADSIZE_Pos) // 24 bit address
+            | (1 << QUADSPI_CCR_ADMODE_Pos); // address over one data line
+    QUADSPI->AR = address;
+    waitForStatus(IS25LP064A_SR_WIP,0);
+}
+
+// erases a block of 32 kbytes
+void QspiEraseBlock32Qpi(uint32_t address)
+{
+    writeEnableQpi();
+    while((QUADSPI->SR & (1 << QUADSPI_SR_BUSY_Pos))!=0);
+    QUADSPI->DLR = 0;
+    QUADSPI->CCR = (3 << QUADSPI_CCR_IMODE_Pos) // instruction on four lines
+            | (BLOCK_ERASE32_CMD << QUADSPI_CCR_INSTRUCTION_Pos)
+            | (2 << QUADSPI_CCR_ADSIZE_Pos) // 24 bit address
+            | (3 << QUADSPI_CCR_ADMODE_Pos); // address over 4 data lines
+    QUADSPI->AR = address;
+    waitForStatusQpi(IS25LP064A_SR_WIP,0);
+}
+
+// erases a block of 32 kbytes
+void QspiEraseBlock32(uint32_t address)
+{
+    writeEnable();
+    while((QUADSPI->SR & (1 << QUADSPI_SR_BUSY_Pos))!=0);
+    QUADSPI->DLR = 0;
+    QUADSPI->CCR = (1 << QUADSPI_CCR_IMODE_Pos) // instruction on one line
+            | (BLOCK_ERASE32_CMD << QUADSPI_CCR_INSTRUCTION_Pos)
+            | (2 << QUADSPI_CCR_ADSIZE_Pos) // 24 bit address
+            | (1 << QUADSPI_CCR_ADMODE_Pos); // address over one data line
+    QUADSPI->AR = address;
+    waitForStatus(IS25LP064A_SR_WIP,0);
+}
+
+// erases a block of 64 kbytes
+void QspiEraseBlock64Qpi(uint32_t address)
+{
+    writeEnableQpi();
+    while((QUADSPI->SR & (1 << QUADSPI_SR_BUSY_Pos))!=0);
+    QUADSPI->DLR = 0;
+    QUADSPI->CCR = (3 << QUADSPI_CCR_IMODE_Pos) // instruction on four lines
+            | (BLOCK_ERASE64_CMD << QUADSPI_CCR_INSTRUCTION_Pos)
+            | (2 << QUADSPI_CCR_ADSIZE_Pos) // 24 bit address
+            | (3 << QUADSPI_CCR_ADMODE_Pos); // address over 4 data lines
+    QUADSPI->AR = address;
+    waitForStatusQpi(IS25LP064A_SR_WIP,0);
+}
+
+// erases a block of 64 kbytes
+void QspiEraseBlock64(uint32_t address)
+{
+    writeEnable();
+    while((QUADSPI->SR & (1 << QUADSPI_SR_BUSY_Pos))!=0);
+    QUADSPI->DLR = 0;
+    QUADSPI->CCR = (1 << QUADSPI_CCR_IMODE_Pos) // instruction on one line
+            | (BLOCK_ERASE64_CMD << QUADSPI_CCR_INSTRUCTION_Pos)
+            | (2 << QUADSPI_CCR_ADSIZE_Pos) // 24 bit address
+            | (1 << QUADSPI_CCR_ADMODE_Pos); // address over one data line
+    QUADSPI->AR = address;
+    waitForStatus(IS25LP064A_SR_WIP,0);
+}
+
 void QspiEraseChipQpi()
 {
     writeEnableQpi();
@@ -381,7 +451,7 @@ void QspiEraseChip()
     writeEnable();
     while((QUADSPI->SR & (1 << QUADSPI_SR_BUSY_Pos))!=0);
     QUADSPI->CCR = (1 << QUADSPI_CCR_IMODE_Pos) 
-            | (CHIP_ERASE_QPI_CMD << QUADSPI_CCR_INSTRUCTION_Pos);
+            | (CHIP_ERASE_SPI_CMD << QUADSPI_CCR_INSTRUCTION_Pos);
     waitForStatus(IS25LP064A_SR_WIP,0);
 }
 

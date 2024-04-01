@@ -67,12 +67,23 @@ void processUartReception(uint8_t receivedByte)
 void flashingTask()
 {
     uint32_t bytesReceived=0;
+    uint32_t nblocks;
+    uint32_t blockaddress=0;
     disableAudioEngine();
     waitSysticks(1);
     // call chip erase
     setQspiStatus(2);
     endMemoryMappedMode();
-    QspiEraseChip();
+
+
+    nblocks = dl.binFileLength / 0x10000;
+    nblocks++;
+    for (uint32_t c=0;c<nblocks;c++)
+    {
+        QspiEraseBlock64(blockaddress);
+        blockaddress += 0x10000;
+    }
+    //QspiEraseChip();
     sendAck();
     uartInputBfrCntr=0;
     while(bytesReceived < dl.binFileLength)
