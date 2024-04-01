@@ -177,6 +177,7 @@ int main(void)
 	
     piPicoFxUiSetup(&piPicoUiController);
 	OledClearDisplay();
+    clearDelayLine();
 	for (uint8_t c=0;c<N_FX_PROGRAMS;c++)
 	{
 		if ((uint32_t)fxPrograms[c]->setup != 0)
