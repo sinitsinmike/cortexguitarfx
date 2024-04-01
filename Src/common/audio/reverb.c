@@ -100,7 +100,7 @@ __attribute__((section (".qspi_code")))
 float getFeedback(uint8_t delayLineIndex,float tau,uint8_t paramNr)
 {
     float feedbackVal=0.0f;
-    for(uint8_t c=0;c<4;c++)
+    for(uint8_t c=0;c<3;c++)
     {
         if (reverbParameterSet[paramNr].taus[c] < tau && reverbParameterSet[paramNr].taus[c+1] > tau)
         {
