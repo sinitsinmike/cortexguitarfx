@@ -38,6 +38,7 @@
 #include "i2c.h"
 #include "wm8731.h"
 #include "pcm3060.h"
+#include "memchecker.h"
 #include "audio/sineplayer.h"
 #include "audio/simpleChorus.h"
 #include "audio/secondOrderIirFilter.h"
@@ -147,6 +148,16 @@ int main(void)
         while ((task & (1 << TASK_FLASH_QSPI)) == 0);    
         flashingTask();
         task &= ~(1 << TASK_FLASH_QSPI);
+    }
+
+    // start memchecker if exit is pressed during startup
+    currentSwitchVal = getMomentarySwitchValue(1);
+    if ((currentSwitchVal & 0x01)==1)
+    {
+        while (1)
+        {
+            checkSDRAM();
+        }
     }
 	#ifdef PCM3060_CODEC
     setupPCM3060();
