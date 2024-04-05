@@ -15,10 +15,10 @@
 #ifdef STM32
 inline float clip(float sample,volatile uint32_t*audioStatePtr)
 {
-    if (sample > 1.0f)
+    if (sample > 0.999999881f)
     {
         *audioStatePtr |= (1 << AUDIO_STATE_OUTPUT_CLIPPED);
-        return 1.0f;
+        return 0.999999881f;
     }
     else if (sample < -1.0f)
     {
