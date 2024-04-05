@@ -38,7 +38,7 @@ void hadamardDiffuserProcessArray(float * channels,HadamardDiffuserType*data,vol
     channels[0] = (sum_first + sum_second)*0.5f;
     channels[1] = (diff_first + diff_second)*0.5f;
     channels[2] = (sum_first - sum_second)*0.5f;
-    channels[3] = (diff_first + diff_second)*0.5f;
+    channels[3] = (diff_first - diff_second)*0.5f;
 
     data->delayPointer++;
     data->delayPointer &= (data->diffusorSize -1);
