@@ -59,6 +59,9 @@ void initUart(uint32_t baudrate)
     // enable clock
     RCC->APB2ENR |= (1 << RCC_APB2ENR_USART1EN_Pos);
 
+    // disable uart for setting the baud rate etc
+    USART1->CR1 &= ~(1 << USART_CR1_UE_Pos); 
+
     // define baudrate
     divider = APB2_SPEED/baudrate; 
     USART1->BRR = divider & 0xFFFF;
