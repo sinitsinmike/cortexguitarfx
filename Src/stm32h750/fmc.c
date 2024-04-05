@@ -95,11 +95,14 @@ void initFmcSdram()
     const uint8_t gpioIPins[] = {7,6,5,3,2,9,4,1,10,0};
     setFmcGpio(gpioIPins,sizeof(gpioIPins),'I'-'A');
 
-    const uint8_t gpioHPins[] = {15,13,14,2,3,12,11,10,8,9,5};
+    const uint8_t gpioHPins[] = {15,13,14,2,3,12,11,10,8,9};
     setFmcGpio(gpioHPins,sizeof(gpioHPins),'H'-'A');
 
     const uint8_t gpioFPins[] = {0,2,1,3,4,5,13,12,15,11,14};
     setFmcGpio(gpioFPins,sizeof(gpioFPins),'F'-'A');
+
+    const uint8_t gpioHPins2[] = {5}; // init pin5 later on, maybe it helps
+    setFmcGpio(gpioHPins2,sizeof(gpioHPins2),'H'-'A');
 
     // initialize fmc peripheral
 
@@ -114,7 +117,7 @@ void initFmcSdram()
                               (0 << FMC_SDCRx_RPIPE_Pos); //no read pipe delay
     
     FMC_Bank5_6_R->SDTR[0] =  ((10-1) << FMC_SDTRx_TRCD_Pos) | // row to column delay
-                              ((16-1) << FMC_SDTRx_TRCD_Pos) | // row precharge delay
+                              ((16-1) << FMC_SDTRx_TRP_Pos) | // row precharge delay
                               ((3-1) << FMC_SDTRx_TWR_Pos) | // write recovery delay
                               ((8-1) << FMC_SDTRx_TRC_Pos) | // row cycle delay
                               ((4-1) << FMC_SDTRx_TRAS_Pos) | // self refresh time
