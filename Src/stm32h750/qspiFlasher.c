@@ -71,7 +71,7 @@ void flashingTask()
     uint32_t blockaddress=0;
     disableAudioEngine();
     waitSysticks(1);
-    // call chip erase
+    
     setQspiStatus(2);
     endMemoryMappedMode();
 
