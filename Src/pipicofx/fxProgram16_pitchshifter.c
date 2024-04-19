@@ -84,7 +84,7 @@ static void fxProgramParam3Callback(uint16_t val,void*data) // BufferSize
     if (newVal != pData->pitchShifter.buffersizePowerTwo)
     {
         pData->pitchShifter.buffersizePowerTwo=newVal;
-        initPitchshifter(&pData->pitchShifter);
+        initPitchshifter(&pData->pitchShifter,getDelayMemoryPointer(DELAY_LINE_TYPE_SDRAM));
     }
     fxProgram16.parameters[1].rawValue = val;
 }
@@ -102,7 +102,7 @@ __attribute__ ((section (".qspi_code")))
 static void fxProgramSetup(void*data)
 {
     FxProgram16DataType* pData= (FxProgram16DataType*)data;
-    initPitchshifter(&pData->pitchShifter);
+    initPitchshifter(&pData->pitchShifter,getDelayMemoryPointer(DELAY_LINE_TYPE_SDRAM));
     
 }
 
@@ -110,7 +110,7 @@ __attribute__ ((section (".qspi_code")))
 static void fxProgramReset(void*data)
 {
     FxProgram16DataType* pData= (FxProgram16DataType*)data;
-    initPitchshifter(&pData->pitchShifter);  
+    initPitchshifter(&pData->pitchShifter,getDelayMemoryPointer(DELAY_LINE_TYPE_SDRAM));  
 }
 
 FxProgram16DataType fxProgram16data=

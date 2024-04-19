@@ -50,7 +50,7 @@ static void fxProgramParam3Callback(uint16_t val,void*data) // Parameter
 {
     FxProgram10DataType* pData= (FxProgram10DataType*)data;
     pData->reverb.paramNr=(val >> 10);
-    initReverb(&pData->reverb,pData->reverbTime);
+    initReverb(&pData->reverb,pData->reverbTime,getDelayMemoryPointer(DELAY_LINE_TYPE_SDRAM));
     fxProgram10.parameters[2].rawValue = val;
 }
 
@@ -67,7 +67,7 @@ __attribute__ ((section (".qspi_code")))
 static void fxProgramSetup(void*data)
 {
     FxProgram10DataType* pData= (FxProgram10DataType*)data;
-    initReverb(&pData->reverb,pData->reverbTime);
+    initReverb(&pData->reverb,pData->reverbTime,getDelayMemoryPointer(DELAY_LINE_TYPE_SDRAM));
 }
 
 FxProgram10DataType fxProgram10data=

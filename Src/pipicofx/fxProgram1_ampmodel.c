@@ -97,7 +97,7 @@ static void fxProgram1Setup(void*data)
     FxProgram1DataType* pData = (FxProgram1DataType*)data;
     initfirFilter(&pData->filter3);
     initWaveShaper(&pData->waveshaper1,&waveShaperDefaultOverdrive);
-    initDelay(&pData->delay,getDelayMemoryPointer(),DELAY_LINE_LENGTH);
+    initDelay(&pData->delay,getDelayMemoryPointer(DELAY_LINE_TYPE_SDRAM),DELAY_LINE_SDRAM_LENGTH);
 }
 
 FxProgram1DataType fxProgram1data = {

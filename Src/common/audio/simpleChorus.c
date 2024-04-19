@@ -10,9 +10,9 @@ void simpleChorusSetFrequency(uint16_t freq,SimpleChorusType*data)
 
 
 __attribute__((section (".qspi_code")))
-void initSimpleChorus(SimpleChorusType*data)
+void initSimpleChorus(SimpleChorusType*data,float*delayMemoryPointer)
 {
-    data->delayBuffer = getDelayMemoryPointer();
+    data->delayBuffer = delayMemoryPointer;
     for(uint16_t c=0;c<SIMPLE_CHORUS_DELAY_SIZE;c++)
     {
         data->delayBuffer[c]=0.0f;

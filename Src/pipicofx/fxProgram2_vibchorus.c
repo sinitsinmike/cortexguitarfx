@@ -79,7 +79,7 @@ __attribute__ ((section (".qspi_code")))
 static void fxProgram2Setup(void*data)
 {
     FxProgram2DataType* pData = (FxProgram2DataType*)data;
-    initSimpleChorus(&pData->chorusData);
+    initSimpleChorus(&pData->chorusData,getDelayMemoryPointer(DELAY_LINE_TYPE_SDRAM));
 }
 
 FxProgram2DataType fxProgram2data = {

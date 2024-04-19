@@ -42,9 +42,9 @@ int16_t getSineValue(uint32_t phase)
 
 
 __attribute__((section (".qspi_code")))
-void initSineChorus(SineChorusType*data)
+void initSineChorus(SineChorusType*data,float * delayMemoryPointer)
 {
-    data->delayBuffer = getDelayMemoryPointer();
+    data->delayBuffer = delayMemoryPointer;
     for(uint16_t c=0;c<SINE_CHORUS_DELAY_SIZE;c++)
     {
         data->delayBuffer[c]=0.0f;

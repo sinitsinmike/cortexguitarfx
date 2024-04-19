@@ -16,7 +16,7 @@ typedef struct
 
 
 float reverbProcessSample(float sampleIn,ReverbType*reverbData);
-void initReverb(ReverbType*reverbData,float);
+void initReverb(ReverbType*reverbData,float,float*);
 void setReverbTime(float reverbTime,ReverbType*reverbData);
 const char * getReverbParameterSetName(ReverbType*reverbData);
 #endif

@@ -17,6 +17,6 @@ typedef struct
 
 
 float reverb2ProcessSample(float sampleIn,Reverb2Type*reverbData);
-void initReverb2(Reverb2Type*reverbData);
+void initReverb2(Reverb2Type*,float*);
 
 #endif

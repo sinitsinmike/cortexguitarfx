@@ -11,11 +11,9 @@ const int16_t diffuserTimes[4][4]={
     {73, 293, 1597, 2011}
 };
 
-//float internalRam[16*2048+4096];
 __attribute__ ((section (".qspi_code")))
-void initReverb3(Reverb3Type*data)
+void initReverb3(Reverb3Type*data,float*delayMemoryPtr)
 {
-    float * delayMemoryPtr = getDelayMemoryPointer(); //internalRam;
     uint32_t cnt=0;
     for(uint8_t c=0;c<4;c++)
     {

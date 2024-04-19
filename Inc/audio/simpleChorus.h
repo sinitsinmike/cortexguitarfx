@@ -21,7 +21,7 @@ typedef struct
 
 void simpleChorusSetFrequency(uint16_t freq,SimpleChorusType*data);
 
-void initSimpleChorus(SimpleChorusType*data);
+void initSimpleChorus(SimpleChorusType*,float*);
 
 float simpleChorusProcessSample(float sampleIn,SimpleChorusType*data);
 #endif

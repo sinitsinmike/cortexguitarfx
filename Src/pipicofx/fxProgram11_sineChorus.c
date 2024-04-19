@@ -102,7 +102,7 @@ __attribute__ ((section (".qspi_code")))
 static void fxProgramSetup(void*data)
 {
     FxProgram11DataType* pData = (FxProgram11DataType*)data;
-    initSineChorus(&pData->sineChorus);
+    initSineChorus(&pData->sineChorus,getDelayMemoryPointer(DELAY_LINE_TYPE_SDRAM));
 }
 
 

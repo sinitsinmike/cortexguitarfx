@@ -19,7 +19,7 @@ typedef struct
     uint8_t modulation;
 } Reverb3Type;
 
-void initReverb3(Reverb3Type*data);
+void initReverb3(Reverb3Type*,float*);
 float reverb3processSample(float sampleIn,Reverb3Type*data);
 
 

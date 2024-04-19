@@ -19,7 +19,7 @@ static void fxProgramSetup(void*data)
 {
     FxProgram15DataType* pData= (FxProgram15DataType*)data;
     initThreeBandEq(&pData->eq);
-    initReverb(&pData->reverb,500);
+    initReverb(&pData->reverb,500,getDelayMemoryPointer(DELAY_LINE_TYPE_RAM));
 }
 
 __attribute__ ((section (".qspi_code")))

@@ -123,9 +123,8 @@ void setReverbTime(float reverbTime,ReverbType*reverbData)
 
 
 __attribute__((section (".qspi_code")))
-void initReverb(ReverbType*reverbData,float reverbTime)
+void initReverb(ReverbType*reverbData,float reverbTime,float*delayMemoryPointer)
 {
-    float * delayMemoryPointer = getDelayMemoryPointer();
     for(uint8_t c=0;c<4;c++)
     {
         reverbData->delayPointers[c]=delayMemoryPointer + c*4096;

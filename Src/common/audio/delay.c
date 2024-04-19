@@ -2,7 +2,9 @@
 #include "audio/audiotools.h"
 
 __attribute__ ((section (".sdram_bss")))
-float delayLineSdram[DELAY_LINE_LENGTH];
+float delayLineSdram[DELAY_LINE_SDRAM_LENGTH];
+
+float delayLineRam[DELAY_LINE_RAM_LENGTH];
 
 __attribute__((section (".qspi_code")))
 void initDelay(DelayDataType*data,float * memoryPointer,uint32_t bufferLength)
@@ -56,10 +58,18 @@ float getDelayedSample(DelayDataType*data)
 }
 
 __attribute__((section (".qspi_code")))
-float * getDelayMemoryPointer()
+float * getDelayMemoryPointer(uint8_t delayLineType)
 {
-    return (float*)delayLineSdram;
+    if (delayLineType == DELAY_LINE_TYPE_SDRAM)
+    {
+        return (float*)delayLineSdram;
+    }
+    else 
+    {
+        return (float*)delayLineRam;
+    }
 }
+
 
 __attribute__((section (".qspi_code")))
 void addSampleToDelayline(float sampleIn,DelayDataType*data)
@@ -72,9 +82,13 @@ void addSampleToDelayline(float sampleIn,DelayDataType*data)
 __attribute__((section (".qspi_code")))
 void clearDelayLine()
 {
-    for (uint32_t c=0;c<DELAY_LINE_LENGTH;c++)
+    for (uint32_t c=0;c<DELAY_LINE_SDRAM_LENGTH;c++)
     {
         delayLineSdram[c]=0.0f;
+    }
+    for (uint32_t c=0;c<DELAY_LINE_RAM_LENGTH;c++)
+    {
+        delayLineRam[c]=0.0f;
     }
 }
 

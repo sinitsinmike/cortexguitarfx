@@ -25,7 +25,7 @@ typedef struct
 
 float sineChorusProcessSample(float sampleIn,SineChorusType*data);
 float sineChorusInterpolatedProcessSample(float sampleIn,SineChorusType*data);
-void initSineChorus(SineChorusType*data);
+void initSineChorus(SineChorusType*,float*);
 void sineChorusSetFrequency(uint16_t freq,SineChorusType*data);
 
 

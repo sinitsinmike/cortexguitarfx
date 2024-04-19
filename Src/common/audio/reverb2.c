@@ -15,9 +15,8 @@ __attribute__ ((section (".qspi_data")))
 const uint32_t delay_lengths[]={1523,1847,683,971};
 
 __attribute__ ((section (".qspi_code")))
-void initReverb2(Reverb2Type*reverbData)
+void initReverb2(Reverb2Type*reverbData,float * delayMemoryPointer )
 {
-    float * delayMemoryPointer = getDelayMemoryPointer();
     for (uint8_t c=0;c<8;c++)
     {
         reverbData->aps[c].delayLineIn = delayMemoryPointer + c*1024;

@@ -193,8 +193,8 @@ static void fxProgramSetup(void*data)
     initfirFilter(&pData->hiwattFir);
     initfirFilter(&pData->voxAC15Fir);
     initMultiWaveShaper(&pData->waveshaper1,&multiWaveshaper1);
-    initDelay(&pData->delay,getDelayMemoryPointer(),DELAY_LINE_LENGTH);
-    initReverb(&pData->reverb,500);
+    initDelay(&pData->delay,getDelayMemoryPointer(DELAY_LINE_TYPE_SDRAM),DELAY_LINE_SDRAM_LENGTH);
+    initReverb(&pData->reverb,500,getDelayMemoryPointer(DELAY_LINE_TYPE_SDRAM));
 }
 
 __attribute__ ((section (".qspi_code")))

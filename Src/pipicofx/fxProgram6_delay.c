@@ -88,7 +88,7 @@ __attribute__ ((section (".qspi_code")))
 static void fxProgram6Setup(void*data)
 {
     FxProgram6DataType* pData= (FxProgram6DataType*)data;
-    initDelay(&pData->delay,getDelayMemoryPointer(),DELAY_LINE_LENGTH);
+    initDelay(&pData->delay,getDelayMemoryPointer(DELAY_LINE_TYPE_SDRAM),DELAY_LINE_SDRAM_LENGTH);
 }
 
 FxProgram6DataType fxProgram6data;

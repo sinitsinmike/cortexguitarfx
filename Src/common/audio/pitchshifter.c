@@ -6,7 +6,6 @@
 __attribute__ ((section (".qspi_code")))
 float pitchShifterProcessSample(float sampleIn,PitchshifterDataType*data)
 {
-    float * delayMemoryPointer = getDelayMemoryPointer();
     float sampleOut=0;
     int16_t deltaIndex;
     float envelopeVal;
@@ -19,7 +18,7 @@ float pitchShifterProcessSample(float sampleIn,PitchshifterDataType*data)
     {
         envelopeVal = ((data->buffersize<<2) - data->delayLength1)/(float)((data->buffersize<<1)-1);
     }
-    sampleOut += (*(delayMemoryPointer + deltaIndex)*envelopeVal);
+    sampleOut += (*(data->delayBufferPtr + deltaIndex)*envelopeVal);
 
     deltaIndex = (data->currentDelayPosition - (data->delayLength2>>2))&(data->buffersize-1);
     if (data->delayLength2 <(data->buffersize<<1))
@@ -30,7 +29,7 @@ float pitchShifterProcessSample(float sampleIn,PitchshifterDataType*data)
     {
         envelopeVal = ((data->buffersize<<2) - data->delayLength2)/(float)((data->buffersize<<1)-1);
     }
-    sampleOut += (*(delayMemoryPointer + deltaIndex)*envelopeVal);
+    sampleOut += (*(data->delayBufferPtr + deltaIndex)*envelopeVal);
     data->currentDelayPosition++;
     data->currentDelayPosition &= (data->buffersize-1);
     data->delayLength1 += data->delayIncrement;
@@ -53,14 +52,14 @@ float pitchShifterProcessSample(float sampleIn,PitchshifterDataType*data)
         data->delayLength2 = 0;
     }
 
-    *(delayMemoryPointer + data->currentDelayPosition) = sampleIn;
+    *(data->delayBufferPtr + data->currentDelayPosition) = sampleIn;
     return sampleOut;
 }
 
 __attribute__ ((section (".qspi_code")))
-void initPitchshifter(PitchshifterDataType*data)
+void initPitchshifter(PitchshifterDataType*data,float * delayMemoryPointer)
 {
-    float * delayMemoryPointer = getDelayMemoryPointer();
+    data->delayBufferPtr = delayMemoryPointer;
     data->buffersize = 1 << data->buffersizePowerTwo;
     for (uint16_t c=0;c<data->buffersize;c++)
     {

@@ -14,13 +14,13 @@ void writeandCheck(uint32_t testVal,uint16_t readTimes)
     char ncBfr[32];
     uint16_t clen;
     uint32_t val;
-    uint32_t * memPtr = (uint32_t*)getDelayMemoryPointer();
+    uint32_t * memPtr = (uint32_t*)getDelayMemoryPointer(DELAY_LINE_TYPE_SDRAM);
     clen = copyToString(charBfr,"Initializing SDRAM with ");
     UInt32ToChar(testVal,ncBfr);
     appendToString(charBfr,ncBfr);
     clen = appendToString(charBfr," \r\n");
     sendBlocking((uint8_t*)charBfr,clen);
-    for (uint32_t c=0;c<DELAY_LINE_LENGTH;c++)
+    for (uint32_t c=0;c<DELAY_LINE_SDRAM_LENGTH;c++)
     {
         *(memPtr + c) = testVal;
     }
@@ -36,7 +36,7 @@ void writeandCheck(uint32_t testVal,uint16_t readTimes)
         appendToString(charBfr,ncBfr);
         clen = appendToString(charBfr,"\r\n");
         sendBlocking((uint8_t*)charBfr,clen);
-        for (uint32_t cc=0;cc<DELAY_LINE_LENGTH;cc++)
+        for (uint32_t cc=0;cc<DELAY_LINE_SDRAM_LENGTH;cc++)
         {
             val = *(memPtr + cc);
             if (val != testVal)
@@ -63,11 +63,11 @@ void writeandCheckAscending(uint16_t readTimes)
     char ncBfr[32];
     uint16_t clen;
     uint32_t val;
-    uint32_t * memPtr = (uint32_t*)getDelayMemoryPointer();
+    uint32_t * memPtr = (uint32_t*)getDelayMemoryPointer(DELAY_LINE_TYPE_SDRAM);
     clen = copyToString(charBfr,"write and read ascending sequence");
     clen = appendToString(charBfr," \r\n");
     sendBlocking((uint8_t*)charBfr,clen);
-    for (uint32_t c=0;c<DELAY_LINE_LENGTH;c++)
+    for (uint32_t c=0;c<DELAY_LINE_SDRAM_LENGTH;c++)
     {
         *(memPtr + c) = c;
     }
@@ -83,7 +83,7 @@ void writeandCheckAscending(uint16_t readTimes)
         appendToString(charBfr,ncBfr);
         clen = appendToString(charBfr,"\r\n");
         sendBlocking((uint8_t*)charBfr,clen);
-        for (uint32_t cc=0;cc<DELAY_LINE_LENGTH;cc++)
+        for (uint32_t cc=0;cc<DELAY_LINE_SDRAM_LENGTH;cc++)
         {
             val = *(memPtr + cc);
             if (val != cc)
@@ -110,11 +110,11 @@ void writeandCheckDescending(uint16_t readTimes)
     char ncBfr[32];
     uint16_t clen;
     uint32_t val;
-    uint32_t * memPtr = (uint32_t*)getDelayMemoryPointer();
+    uint32_t * memPtr = (uint32_t*)getDelayMemoryPointer(DELAY_LINE_TYPE_SDRAM);
     clen = copyToString(charBfr,"write and read descending sequence");
     clen = appendToString(charBfr," \r\n");
     sendBlocking((uint8_t*)charBfr,clen);
-    for (uint32_t c=0;c<DELAY_LINE_LENGTH;c++)
+    for (uint32_t c=0;c<DELAY_LINE_SDRAM_LENGTH;c++)
     {
         *(memPtr + c) = 0xFFFFFFFF - c;
     }
@@ -130,7 +130,7 @@ void writeandCheckDescending(uint16_t readTimes)
         appendToString(charBfr,ncBfr);
         clen = appendToString(charBfr,"\r\n");
         sendBlocking((uint8_t*)charBfr,clen);
-        for (uint32_t cc=0;cc<DELAY_LINE_LENGTH;cc++)
+        for (uint32_t cc=0;cc<DELAY_LINE_SDRAM_LENGTH;cc++)
         {
             val = *(memPtr + cc);
             if (val != (0xFFFFFFFF - cc))

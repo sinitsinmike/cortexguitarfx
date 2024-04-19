@@ -65,7 +65,7 @@ __attribute__ ((section (".qspi_code")))
 static void fxProgramSetup(void*data)
 {
     FxProgram13DataType* pData= (FxProgram13DataType*)data;
-    initReverb3(&pData->reverb);
+    initReverb3(&pData->reverb,getDelayMemoryPointer(DELAY_LINE_TYPE_SDRAM));
 }
 
 FxProgram13DataType fxProgram13data;
