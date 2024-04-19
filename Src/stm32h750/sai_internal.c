@@ -41,6 +41,7 @@ void DMA1_Stream1_IRQHandler(void) // adc
 void DMA1_Stream0_IRQHandler(void) // adc
 #endif
 {
+    /*
     if ((task & (1 << TASK_PROCESS_AUDIO_INPUT)) == 0)
     {
         audioState &= ~(1 << AUDIO_STATE_INPUT_BUFFER_OVERRUN);
@@ -48,8 +49,9 @@ void DMA1_Stream0_IRQHandler(void) // adc
     else
     {
         audioState  |= (1 << AUDIO_STATE_INPUT_BUFFER_OVERRUN);
-    }
+    }*/
     #ifdef PCM3060_CODEC
+    NVIC_DisableIRQ(DMA1_Stream1_IRQn);
     if ((DMA1->LISR & DMA_LISR_TCIF1) != 0) // receiver transfer complete
     {
         dbfrInputPtr = AUDIO_BUFFER_SIZE*2;
@@ -62,9 +64,7 @@ void DMA1_Stream0_IRQHandler(void) // adc
     }
 
     // wait for a transmitter flag to be set
-    //setPin(DS_PIN_30, 1);
     while (((DMA1->LISR & DMA_LISR_TCIF0) == 0) && ((DMA1->LISR & DMA_LISR_HTIF0) == 0));
-    //setPin(DS_PIN_30, 0);
     if ((DMA1->LISR & DMA_LISR_TCIF0) != 0)
     {
         dbfrPtr = AUDIO_BUFFER_SIZE*2;
@@ -76,6 +76,7 @@ void DMA1_Stream0_IRQHandler(void) // adc
         DMA1->LIFCR = (1 << DMA_LIFCR_CHTIF0_Pos); 
     }
     #else
+    NVIC_DisableIRQ(DMA1_Stream0_IRQn);
     if ((DMA1->LISR & DMA_LISR_TCIF0) != 0) // receiver transfer complete
     {
         dbfrInputPtr = AUDIO_BUFFER_SIZE*2;
@@ -88,9 +89,7 @@ void DMA1_Stream0_IRQHandler(void) // adc
     }
 
     // wait for a transmitter flag to be set
-    //setPin(DS_PIN_30, 1);
     while (((DMA1->LISR & DMA_LISR_TCIF1) == 0) && ((DMA1->LISR & DMA_LISR_HTIF1) == 0));
-    //setPin(DS_PIN_30, 0);
     if ((DMA1->LISR & DMA_LISR_TCIF1) != 0)
     {
         dbfrPtr = AUDIO_BUFFER_SIZE*2;
@@ -102,78 +101,130 @@ void DMA1_Stream0_IRQHandler(void) // adc
         DMA1->LIFCR = (1 << DMA_LIFCR_CHTIF1_Pos); 
     }
     #endif
-    task |= (1 << TASK_PROCESS_AUDIO_INPUT) | (1 << TASK_PROCESS_AUDIO);
+    //task |= (1 << TASK_PROCESS_AUDIO_INPUT) | (1 << TASK_PROCESS_AUDIO);
 
-    if (((task & (1 << TASK_PROCESS_AUDIO))!= 0) && ((task & (1 << TASK_PROCESS_AUDIO_INPUT))!= 0))
+    //if (((task & (1 << TASK_PROCESS_AUDIO))!= 0) && ((task & (1 << TASK_PROCESS_AUDIO_INPUT))!= 0))
+    //{
+    
+    ticStart = getTimeLW();
+    audioBufferPtr = getEditableAudioBufferHiRes();
+    audioBufferInputPtr = getInputAudioBufferHiRes();
+    for (uint32_t c=0;c<AUDIO_BUFFER_SIZE*2;c+=2) // count in frame of 4 bytes or two  24bit samples
     {
-    
-		ticStart = getTimeLW();
-        audioBufferPtr = getEditableAudioBufferHiRes();
-        audioBufferInputPtr = getInputAudioBufferHiRes();
-        for (uint32_t c=0;c<AUDIO_BUFFER_SIZE*2;c+=2) // count in frame of 4 bytes or two  24bit samples
-        {
-            
-            // convert raw input to float
-            //inputSampleInt = ((int32_t)(((uint32_t)*(audioBufferInputPtr + c)) << 8) >> 8);
-            #ifdef PCM3060_CODEC
-            inputSampleInt = ((int32_t)(((uint32_t)*(audioBufferInputPtr + c + 1)) << 8) >> 8);
-            #else
-            inputSampleInt = ((int32_t)(((uint32_t)*(audioBufferInputPtr + c)) << 8) >> 8);
         
-            #endif
-            inputSample=(float)inputSampleInt;
-            inputSample /= 8388608.0f;
-            
+        // convert raw input to float
+        //inputSampleInt = ((int32_t)(((uint32_t)*(audioBufferInputPtr + c)) << 8) >> 8);
+        #ifdef PCM3060_CODEC
+        inputSampleInt = ((int32_t)(((uint32_t)*(audioBufferInputPtr + c + 1)) << 8) >> 8);
+        #else
+        inputSampleInt = ((int32_t)(((uint32_t)*(audioBufferInputPtr + c)) << 8) >> 8);
     
-
-            if (inputSample < 0.0f)
-            {
-                avgIn = -inputSample;
-            }
-            else
-            {
-                avgIn = inputSample;
-            }
-            avgInOld = AVERAGING_LOWPASS_CUTOFF*avgIn + ((1.0f-AVERAGING_LOWPASS_CUTOFF)*avgInOld);
-
-            if (audioState & (1 << AUDIO_STATE_ON))
-            {
-                inputSample = piPicoUiController.currentProgram->processSample(inputSample,piPicoUiController.currentProgram->data);
-            }
+        #endif
+        inputSample=(float)inputSampleInt;
+        inputSample /= 8388608.0f;
+        
 
 
-            if (inputSample < 0.0f)
-            {
-                avgOut = -inputSample;
-            }
-            else
-            {
-                avgOut = inputSample;
-            }
-            avgOutOld = AVERAGING_LOWPASS_CUTOFF*avgOut + ((1.0f-AVERAGING_LOWPASS_CUTOFF)*avgOutOld);
-            inputSample=clip(inputSample,getAudioStatePtr());
-            inputSampleInt=((int32_t)(inputSample*8388607.0f));
-            //inputSampleInt = (((inputSampleInt << 8) & 0xFFFF) << 16) | (((inputSampleInt << 8) & 0xFFFF0000L) >> 16);
-            *(audioBufferPtr+c) = inputSampleInt;  
-            *(audioBufferPtr+c+1) = inputSampleInt;
+        if (inputSample < 0.0f)
+        {
+            avgIn = -inputSample;
         }
-        task &= ~((1 << TASK_PROCESS_AUDIO) | (1 << TASK_PROCESS_AUDIO_INPUT));
-        bufferCnt++;
-        if (bufferCnt == UI_UPDATE_IN_SAMPLE_BUFFERS)
-		{
-			bufferCnt = 0;
-			task |= (1 << TASK_UPDATE_AUDIO_UI);
-		}
+        else
+        {
+            avgIn = inputSample;
+        }
+        avgInOld = AVERAGING_LOWPASS_CUTOFF*avgIn + ((1.0f-AVERAGING_LOWPASS_CUTOFF)*avgInOld);
 
-        ticEnd = getTimeLW();
-		if(ticEnd > ticStart)
-		{
-			cpuLoad = ticEnd-ticStart;
-			cpuLoad = cpuLoad*196; // *256*256*F_SAMPLING/AUDIO_BUFFER_SIZE/1000000;
-			cpuLoad = cpuLoad >> 8;
-		}
-        //DebugLedOff();
+        if (audioState & (1 << AUDIO_STATE_ON))
+        {
+            inputSample = piPicoUiController.currentProgram->processSample(inputSample,piPicoUiController.currentProgram->data);
+        }
+
+
+        if (inputSample < 0.0f)
+        {
+            avgOut = -inputSample;
+        }
+        else
+        {
+            avgOut = inputSample;
+        }
+        avgOutOld = AVERAGING_LOWPASS_CUTOFF*avgOut + ((1.0f-AVERAGING_LOWPASS_CUTOFF)*avgOutOld);
+        inputSample=clip(inputSample,getAudioStatePtr());
+        inputSampleInt=((int32_t)(inputSample*8388607.0f));
+        //inputSampleInt = (((inputSampleInt << 8) & 0xFFFF) << 16) | (((inputSampleInt << 8) & 0xFFFF0000L) >> 16);
+        *(audioBufferPtr+c) = inputSampleInt;  
+        *(audioBufferPtr+c+1) = inputSampleInt;
     }
+    task &= ~((1 << TASK_PROCESS_AUDIO) | (1 << TASK_PROCESS_AUDIO_INPUT));
+    bufferCnt++;
+    if (bufferCnt == UI_UPDATE_IN_SAMPLE_BUFFERS)
+    {
+        bufferCnt = 0;
+        task |= (1 << TASK_UPDATE_AUDIO_UI);
+    }
+
+    ticEnd = getTimeLW();
+    if(ticEnd > ticStart)
+    {
+        cpuLoad = ticEnd-ticStart;
+        cpuLoad = cpuLoad*196; // *256*256*F_SAMPLING/AUDIO_BUFFER_SIZE/1000000;
+        cpuLoad = cpuLoad >> 8;
+    }
+    //}
+
+    audioState &= ~((1 << AUDIO_STATE_INPUT_BUFFER_OVERRUN) | (1 << AUDIO_STATE_BUFFER_UNDERRUN));
+    // check if the interrupt flag has been set already, if so: set the interrupt overflows, and clear it without processing
+    #ifdef PCM3060_CODEC
+    if ((DMA1->LISR & DMA_LISR_TCIF1) != 0) // receiver transfer complete
+    {
+        audioState  |= (1 << AUDIO_STATE_INPUT_BUFFER_OVERRUN);
+        DMA1->LIFCR = (1 << DMA_LIFCR_CTCIF1_Pos); 
+    }
+    if ((DMA1->LISR & DMA_LISR_HTIF1) != 0) // receiver half transfer
+    {
+        audioState  |= (1 << AUDIO_STATE_INPUT_BUFFER_OVERRUN);
+        DMA1->LIFCR = (1 << DMA_LIFCR_CHTIF1_Pos); 
+    }
+
+    if ((DMA1->LISR & DMA_LISR_TCIF0) != 0)
+    {
+        audioState  |= (1 << AUDIO_STATE_BUFFER_UNDERRUN);
+        DMA1->LIFCR = (1 << DMA_LIFCR_CTCIF0_Pos); 
+    }
+    if ((DMA1->LISR & DMA_LISR_HTIF0) != 0)
+    {
+        audioState  |= (1 << AUDIO_STATE_BUFFER_UNDERRUN);
+        DMA1->LIFCR = (1 << DMA_LIFCR_CHTIF0_Pos); 
+    }
+    #else
+    if ((DMA1->LISR & DMA_LISR_TCIF0) != 0) // receiver transfer complete
+    {
+        audioState  |= (1 << AUDIO_STATE_INPUT_BUFFER_OVERRUN);
+        DMA1->LIFCR = (1 << DMA_LIFCR_CTCIF0_Pos); 
+    }
+    if ((DMA1->LISR & DMA_LISR_HTIF0) != 0) // receiver half transfer
+    {
+        audioState  |= (1 << AUDIO_STATE_INPUT_BUFFER_OVERRUN);
+        DMA1->LIFCR = (1 << DMA_LIFCR_CHTIF0_Pos); 
+    }
+
+    if ((DMA1->LISR & DMA_LISR_TCIF1) != 0)
+    {
+        audioState  |= (1 << AUDIO_STATE_BUFFER_UNDERRUN);
+        DMA1->LIFCR = (1 << DMA_LIFCR_CTCIF1_Pos); 
+    }
+    if ((DMA1->LISR & DMA_LISR_HTIF1) != 0)
+    {
+        audioState  |= (1 << AUDIO_STATE_BUFFER_UNDERRUN);
+        DMA1->LIFCR = (1 << DMA_LIFCR_CHTIF1_Pos); 
+    }
+    #endif
+    #ifdef PCM3060_CODEC
+    NVIC_EnableIRQ(DMA1_Stream1_IRQn);
+    #else
+    NVIC_EnableIRQ(DMA1_Stream0_IRQn);
+    #endif
 }
 
 
