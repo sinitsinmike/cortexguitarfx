@@ -63,7 +63,7 @@ extern CommBufferType btCommBuffer;
 float inputSampleScaled;
 volatile float avgOutOld=0,avgInOld=0;
 volatile uint8_t fxProgramIdx = 1;
-volatile uint32_t cpuLoad;
+volatile uint32_t cpuLoad=0;
 PiPicoFxUiType piPicoUiController;
 
 const uint8_t switchesPins[2]={ENTER_SWITCH,EXIT_SWITCH};
@@ -128,9 +128,8 @@ int main(void)
     initQspi();
 
 
-
-	initTimer();
 	initAdc();
+    initTimer();
 	#ifndef PCM3060_CODEC
     initI2c(26); // 26 for wm8731, 72 for cs4270, none for pcm3060
     #endif
@@ -328,22 +327,20 @@ int main(void)
             onExitReleased(&piPicoUiController);
             clearReleasedStickyBit(1);
         }
-       encoderDelta=getStickyIncrementDelta();
-       if (encoderDelta != 0)
-       {
-            if (encoderDelta > 0)
-            {
-                encoderDelta = 1;
-            }
-            else
-            {
-                encoderDelta = -1;
-            }
-           onRotaryChange(encoderDelta,&piPicoUiController);
-           clearStickyIncrementDelta();
-       }
-       
-	
+        encoderDelta=getStickyIncrementDelta();
+
+        if (encoderDelta > 2)
+        {
+            encoderDelta = 1;
+            onRotaryChange(encoderDelta,&piPicoUiController);
+            clearStickyIncrementDelta();
+        }
+        else if (encoderDelta < -2)
+        {
+            encoderDelta = -1;
+            onRotaryChange(encoderDelta,&piPicoUiController);
+            clearStickyIncrementDelta();
+        }
 	}
 }
 #endif

@@ -6,10 +6,17 @@
 void initTimer()
 {
     RCC->APB1LENR &= ~(1 << RCC_APB1LENR_TIM5EN_Pos);
-    RCC->APB1LENR |= (1 << RCC_APB1LENR_TIM5EN_Pos);
+    RCC->APB1LENR |= (1 << RCC_APB1LENR_TIM5EN_Pos);    
     TIM5->PSC=240-1;
-    TIM5->CNT=0xFFFFFFFF;
-    TIM5->CR1=(1 << TIM_CR1_CEN_Pos);    
+    TIM5->ARR = 0xFFFFFFFF;
+    TIM5->CNT = 0xFFFFFFF0;
+    TIM5->EGR=(1 << TIM_EGR_UG_Pos);
+    if ((TIM5->SR & (1 << TIM_SR_UIF_Pos)) != 0)
+    {
+        TIM5->SR &= ~(1 << TIM_SR_UIF_Pos);
+    }
+    TIM5->CR1=(1 << TIM_CR1_CEN_Pos);   
+
 }
 
 void resetTime()
