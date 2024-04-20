@@ -23,7 +23,7 @@ static volatile uint32_t dbfrInputPtr;
 
 extern uint32_t task;
 extern float avgInOld, avgOutOld;
-extern uint32_t cpuLoad;
+extern volatile uint32_t cpuLoad;
 extern PiPicoFxUiType piPicoUiController;
 uint16_t bufferCnt;
 volatile uint32_t audioState=0;
