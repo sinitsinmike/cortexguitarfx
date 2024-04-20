@@ -30,7 +30,7 @@ extern uint32_t*  _siqspicode;
 extern uint32_t* _sqspi_code;
 extern uint32_t* _eqspi_code;
 
-#define QUADSPI_DR_BYTE (*((uint8_t*)(&QUADSPI->DR)))
+#define QUADSPI_DR_BYTE ((volatile uint8_t*)(&QUADSPI->DR))
 
 const QspiPinType qspiPins[6] = {
     { //io 0
@@ -163,7 +163,7 @@ void initQspi()
     while((QUADSPI->SR & (1 << QUADSPI_SR_BUSY_Pos))!=0);
     QUADSPI->DLR = 1-1;
     QUADSPI->CCR = (1 << QUADSPI_CCR_IMODE_Pos) | (1 << QUADSPI_CCR_DMODE_Pos) | SET_READ_PARAM_REG_CMD;
-    QUADSPI_DR_BYTE = (uint8_t)0b11110000;
+    *QUADSPI_DR_BYTE = (uint8_t)0b11110000;
     
     // -------------------------
     // Enable Quad Mode on chip
@@ -176,7 +176,7 @@ void initQspi()
         while((QUADSPI->SR & (1 << QUADSPI_SR_BUSY_Pos))!=0);
         QUADSPI->DLR = 1-1;
         QUADSPI->CCR = (1 << QUADSPI_CCR_IMODE_Pos)|(1 << QUADSPI_CCR_DMODE_Pos) | (WRITE_STATUS_REG_CMD);
-        QUADSPI_DR_BYTE = reg | IS25LP064A_SR_QE;
+        *QUADSPI_DR_BYTE = reg | IS25LP064A_SR_QE;
         waitForStatus(IS25LP064A_SR_QE,IS25LP064A_SR_QE);
     }
     setMemoryMappedMode();
@@ -262,7 +262,7 @@ void readManufacturerId(uint8_t * data)
     for (uint8_t c=0;c<3;c++)
     {
         while((QUADSPI->SR & ((1 << QUADSPI_SR_TCF_Pos) | (1 << QUADSPI_SR_FTF_Pos)))==0);
-        *(data+c)=QUADSPI_DR_BYTE;
+        *(data+c)=*QUADSPI_DR_BYTE;
     }
     while((QUADSPI->SR & (1 << QUADSPI_SR_BUSY_Pos))!=0);
     QUADSPI->FCR = (1 << QUADSPI_FCR_CTCF_Pos);
@@ -279,7 +279,7 @@ void readManufacturerIdQpi(uint8_t * data)
     for (uint8_t c=0;c<3;c++)
     {
         while((QUADSPI->SR & ((1 << QUADSPI_SR_TCF_Pos) | (1 << QUADSPI_SR_FTF_Pos)))==0);
-        *(data+c)=QUADSPI_DR_BYTE;
+        *(data+c)=*QUADSPI_DR_BYTE;
     }
     while((QUADSPI->SR & (1 << QUADSPI_SR_BUSY_Pos))!=0);
     QUADSPI->FCR = (1 << QUADSPI_FCR_CTCF_Pos);
@@ -294,7 +294,7 @@ uint8_t readStatusRegister()
                 |(1 << QUADSPI_CCR_DMODE_Pos)
                 |(1 << QUADSPI_CCR_FMODE_Pos)
                 | READ_STATUS_REG_CMD;
-    reg = QUADSPI_DR_BYTE;
+    reg = *QUADSPI_DR_BYTE;
     return reg;
 }
 
@@ -307,7 +307,7 @@ uint8_t readStatusRegisterQpi()
                 |(3 << QUADSPI_CCR_DMODE_Pos)
                 |(1 << QUADSPI_CCR_FMODE_Pos)
                 | READ_STATUS_REG_CMD;
-    reg = QUADSPI_DR_BYTE;
+    reg = *QUADSPI_DR_BYTE;
     return reg;
 }
 
@@ -327,7 +327,7 @@ void QspiProgramPageQpi(uint32_t address,uint8_t*data)
     for(c=0;c<256;c++)
     {
         while((QUADSPI->SR & (1 << QUADSPI_SR_FTF_Pos))==0);
-        QUADSPI_DR_BYTE = data[c];
+        *QUADSPI_DR_BYTE = data[c];
     }
     waitForStatusQpi(IS25LP064A_SR_WIP,0);
 }
@@ -348,7 +348,7 @@ void QspiProgramPage(uint32_t address,uint8_t*data)
     for(c=0;c<256;c++)
     {
         while((QUADSPI->SR & (1 << QUADSPI_SR_FTF_Pos))==0);
-        QUADSPI_DR_BYTE = data[c];
+        *QUADSPI_DR_BYTE = data[c];
     }
     waitForStatus(IS25LP064A_SR_WIP,0);
 }
@@ -470,7 +470,7 @@ void QspiRead(uint32_t address,uint32_t nBytes,uint8_t * data)
     for(uint32_t c=0;c<nBytes;c++)
     {
         while((QUADSPI->SR & (1 << QUADSPI_SR_FTF_Pos))!=0);
-        *(data+c) = QUADSPI_DR_BYTE;
+        *(data+c) = *QUADSPI_DR_BYTE;
     }
 }
 
