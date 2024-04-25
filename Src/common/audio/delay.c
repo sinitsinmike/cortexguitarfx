@@ -32,7 +32,7 @@ float delayLineProcessSample(float sampleIn,DelayDataType*data)
     delayIdx = (data->delayLinePtr - data->delayInSamples) & (data->delayBufferLength -1);
 
     sampleOut = *(data->delayLine +delayIdx)*data->mix + sampleIn*(1.0f - data->mix);
-    sampleFedBack = sampleOut;
+    sampleFedBack = *(data->delayLine +delayIdx);
     if (data->feedbackFunction != 0)
     {
         sampleFedBack = data->feedbackFunction(sampleFedBack,data->feebackData);
