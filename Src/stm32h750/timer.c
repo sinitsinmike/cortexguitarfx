@@ -1,5 +1,6 @@
 #include "timer.h"
 #include "stm32h750/stm32h750xx.h"
+#include "systick.h"
 
 // timer 5 as a 1MHz/us timer
 
@@ -7,6 +8,7 @@ void initTimer()
 {
     RCC->APB1LENR &= ~(1 << RCC_APB1LENR_TIM5EN_Pos);
     RCC->APB1LENR |= (1 << RCC_APB1LENR_TIM5EN_Pos);    
+    waitSysticks(1);
     TIM5->PSC=240-1;
     TIM5->ARR = 0xFFFFFFFF;
     TIM5->CNT = 0xFFFFFFF0;
