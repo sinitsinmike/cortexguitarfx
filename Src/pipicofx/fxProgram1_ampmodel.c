@@ -78,7 +78,7 @@ static void fxProgram1Param3Callback(uint16_t val,void*data) // delay intensity
 {
     FxProgram1DataType* pData = (FxProgram1DataType*)data;
     pData->delay.delayInSamples = 2400 + (val << 3);
-    pData->delay.mix = ((float)val)/4096.0f; // up to 100%
+    pData->delay.mix = ((float)val)/8192.0f; // up to 100%
     pData->delay.feedback = 0.25f;
     fxProgram1.parameters[2].rawValue=val;
 }

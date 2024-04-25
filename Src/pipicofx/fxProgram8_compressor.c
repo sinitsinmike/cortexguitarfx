@@ -133,7 +133,7 @@ __attribute__ ((section (".qspi_code")))
 static void fxProgramP4Callback(uint16_t val,void*data) 
 {
     FxProgram8DataType * pData=(FxProgram8DataType*)data;
-    pData->compressor.gainFunction.threshhold = -60.0f + (float)val/4095.f*60.0;
+    pData->compressor.gainFunction.threshhold = -60.0f + (float)val/4095.f*60.0f;
     fxProgram8.parameters[0].rawValue = val;
 }
 
@@ -206,7 +206,8 @@ FxProgram8DataType fxProgram8Data =
     .compressor.gainFunction.gainReduction = 2.0f,
     .compressor.gainFunction.threshhold = 1.0f,
     .makeupGain.gain = 1.0f,
-    .makeupGain.offset = 0.0f
+    .makeupGain.offset = 0.0f,
+    .compressorType = 0
 };
 
 __attribute__ ((section (".qspi_code")))
