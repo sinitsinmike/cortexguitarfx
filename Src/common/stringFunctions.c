@@ -844,6 +844,13 @@ void dateTimeToString(char * out,uint16_t year,uint8_t month,uint8_t day,uint8_t
      *(out + strPos) = 0;
 }
 
+
+uint16_t copyToString(char * dest,const char * src)
+{
+    dest[0]=0;
+    return appendToString(dest,src);
+}
+
 /**
  * @brief appends appender to appendee
  * 

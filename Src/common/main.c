@@ -39,6 +39,7 @@
 #include "wm8731.h"
 #include "pcm3060.h"
 #include "memchecker.h"
+#include "speedtest_logexp.h"
 #include "audio/sineplayer.h"
 #include "audio/simpleChorus.h"
 #include "audio/secondOrderIirFilter.h"
@@ -155,7 +156,7 @@ int main(void)
     {
         while (1)
         {
-            checkSDRAM();
+            testSpeed();
         }
     }
 	#ifdef PCM3060_CODEC

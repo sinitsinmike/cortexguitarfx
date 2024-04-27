@@ -1,10 +1,11 @@
 #include <stdint.h>
 #include "stdio.h"
-#include "audio/sineplayer.h"
 #include "audio/secondOrderIirFilter.h"
 #include "audio/waveShaper.h"
 #include "audio/sineChorus.h"
 #include "math.h"
+#include "ln.h"
+#include "fastExpLog.h"
 
 float int2float(int32_t a)
 {
@@ -88,10 +89,99 @@ void multiWaveShaperTest()
     multiWaveShaperProcessSample(-0.01f,&wsData);
 }
 
+void logComparisonTest()
+{
+    FILE * fid;
+    float xval;
+    float xInterm;
+    float yval1,yval2,diff;
+    xval = 0.0f;
+    fid = fopen("logdiff.txt","wt");
+    while (xval < 1.0f)
+    {
+        xval += 0.001;
+        xInterm = xval;
+        yval1 = toDb(xInterm);
+        xInterm = xval;
+        yval2 = fastlog(xInterm);
+        diff = yval2 - yval1;
+        fprintf(fid,"%f\r\n",diff);
+    }
+
+    fclose(fid);
+}
+
+void linComparisonTest()
+{
+    FILE * fid;
+    float xval;
+    float xInterm;
+    float yval1,yval2,diff;
+    xval = -120.0f;
+    fid = fopen("lindiff.txt","wt");
+    while (xval < 0.0f)
+    {
+        xval += 0.1;
+        xInterm = xval;
+        yval1 = toLin(xInterm);
+        xInterm = xval;
+        yval2 = fastexp(xInterm);
+        diff = yval2 - yval1;
+        fprintf(fid,"%f\r\n",diff);
+    }
+
+    fclose(fid);
+}
+
+void logAndInverseTest()
+{
+    FILE * fid;
+    float xval;
+    float xInterm;
+    float yval1,xrecalculated,diff;
+
+    xval = 0.0f;
+    fid = fopen("loginverse.txt","wt");
+    while (xval < 1.0f)
+    {
+        xval += 0.0001;
+        xInterm = xval;
+        yval1 = toDb(xInterm);
+        xrecalculated = toLin(yval1);
+        diff = xrecalculated - xval;
+        fprintf(fid,"%f\r\n",diff);
+    }
+    fclose(fid);
+}
+
+void logAndInverseTest2()
+{
+    FILE * fid;
+    float xval;
+    float xInterm;
+    float yval1,xrecalculated,diff;
+
+    xval = 0.0f;
+    fid = fopen("loginverse2.txt","wt");
+    while (xval < 1.0f)
+    {
+        xval += 0.0001;
+        xInterm = xval;
+        yval1 = fastlog(xInterm);
+        xrecalculated = fastexp(yval1);
+        diff = xrecalculated - xval;
+        fprintf(fid,"%f\r\n",diff);
+    }
+    fclose(fid);
+}
+
 int main()
 {
     //impulseTest();
     //waveshaperTest();
     //sineFunctionTest();
-    multiWaveShaperTest();
+    //multiWaveShaperTest();
+    //logComparisonTest();
+    //linComparisonTest();
+    logAndInverseTest2();
 }

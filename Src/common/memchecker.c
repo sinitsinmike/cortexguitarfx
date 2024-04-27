@@ -2,11 +2,7 @@
 #include "stringFunctions.h"
 #include "audio/delay.h"
 
-uint16_t copyToString(char * dest,const char * src)
-{
-    dest[0]=0;
-    return appendToString(dest,src);
-}
+
 
 void writeandCheck(uint32_t testVal,uint16_t readTimes)
 {
