@@ -118,14 +118,16 @@ static void fxProgramP3Display(void*data,char*res)
         {
             *(res+cres++)=*(infDisplay+c++);
         }
+        *(res+cres)=0;
     }
     else
     {
         cres +=  decimalInt16ToChar((int16_t)(gainReductionInt*10),res+cres,1);
-        for (c=0;c<16-cres;c++)
+        for (c=0;c<15-cres;c++)
         {
             *(res+cres++)=' ';
         }
+        *(res+cres)=0;
     }
 }
 
@@ -150,7 +152,7 @@ static void fxProgramP5Callback(uint16_t val,void*data)
 {
     FxProgram8DataType * pData=(FxProgram8DataType*)data;
     pData->makeupGain.gain = (float)val/4095.0f + 1.0f;
-    fxProgram8.parameters[4].rawValue = val;
+    fxProgram8.parameters[2].rawValue = val;
 }
 
 __attribute__ ((section (".qspi_code")))

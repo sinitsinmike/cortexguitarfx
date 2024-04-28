@@ -195,8 +195,8 @@ SECTIONS
 		PROVIDE(__qspi_code_start = _sqspi_code);
 		*(.qspi_code)
 		*(.qspi_code*)
-    *(.qspi_data_fast)
-		*(.qspi_data_fast*)
+    *(.qspi_fast_data)
+		*(.qspi_fast_data*)
 		. = ALIGN(4);
 		_eqspi_code = .;
 
