@@ -125,7 +125,7 @@ static void fxProgramParam3Callback(uint16_t val,void*data) // delay/reverb inte
     pData->delay.mix = ((float)val)/8192.0f; // up to 100%
     pData->delay.feedback = 0.25f;
 
-    setReverbTime(500 + val/4.0f,&pData->reverb);
+    setReverbTime(0.5f + (float)val/4000.0f,&pData->reverb);
     pData->reverb.mix = ((float)val)/8192.0f; // up to 100%
     fxProgram9.parameters[2].rawValue = val;
 }
